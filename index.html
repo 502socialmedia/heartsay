@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Heartsay — Torn between two? Ask which one is better.</title>
+<meta name="description" content="Heartsay lets you photograph two options you are deciding between and have real people give a heart to the better one. Free, 17+, no tracking.">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Instrument+Sans:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --bg:#F7F5F7; --paper:#FFFFFF; --soft:#F1EEF2;
+  --ink:#17121C; --ink-2:#554E5C; --ink-3:#8D8695;
+  --line:#E4DFE9;
+  --brand:#E1003C; --brand-soft:#FFE7EE;
+  --ok:#0B7A55; --ok-soft:#E1F5EC;
+  --display:"Bricolage Grotesque",system-ui,sans-serif;
+  --body:"Instrument Sans",system-ui,-apple-system,sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    color-scheme:dark;
+    --bg:#0D0A11; --paper:#161220; --soft:#201A2A;
+    --ink:#F6F3F8; --ink-2:#B3ABBE; --ink-3:#847C90;
+    --line:#2C2538;
+    --brand:#FF3060; --brand-soft:#39091C;
+    --ok:#4ADE9B; --ok-soft:#0C2C21;
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.6;
+  -webkit-font-smoothing:antialiased}
+.wrap{max-width:680px;margin-inline:auto;padding-inline:20px}
+h1,h2{font-family:var(--display);margin:0;letter-spacing:-.03em;line-height:1.1;text-wrap:balance}
+p{margin:0}
+a{color:var(--brand)}
+img{max-width:100%}
+header{padding-block:40px 0}
+.logo{font-family:var(--display);font-weight:800;font-size:26px;letter-spacing:-.05em;text-decoration:none;color:var(--ink)}
+.logo i{font-style:normal;color:var(--brand)}
+.hero{padding-block:34px 44px;border-bottom:1px solid var(--line)}
+.hero h1{font-size:clamp(30px,7.5vw,46px);font-weight:800}
+.hero h1 em{font-style:normal;color:var(--brand)}
+.hero p{color:var(--ink-2);margin-top:16px;font-size:17.5px;max-width:52ch}
+.pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.pill{font-size:12.5px;font-weight:700;padding:6px 12px;border-radius:999px;background:var(--soft);color:var(--ink-2)}
+.pill.ok{background:var(--ok-soft);color:var(--ok)}
+.pill.brand{background:var(--brand-soft);color:var(--brand)}
+section{padding-block:40px;border-bottom:1px solid var(--line)}
+section h2{font-size:22px;font-weight:600}
+section > p{color:var(--ink-2);margin-top:12px}
+.steps{display:grid;gap:16px;margin-top:22px}
+@media (min-width:620px){.steps{grid-template-columns:repeat(3,1fr)}}
+.step{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:18px}
+.step b{display:block;font-family:var(--display);font-size:13px;color:var(--brand);letter-spacing:.04em}
+.step h3{margin:8px 0 0;font-size:16px;font-weight:600;font-family:var(--body)}
+.step p{color:var(--ink-2);font-size:14.5px;margin-top:6px}
+.rules{margin:18px 0 0;padding-left:20px;color:var(--ink-2)}
+.rules li{margin-block:7px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:15px;padding:20px;margin-top:22px}
+.card h2{font-size:18px}
+.card .mail{display:inline-block;margin-top:10px;font-size:19px;font-weight:700;font-variant-numeric:tabular-nums}
+.card p{color:var(--ink-2);font-size:14.5px;margin-top:8px}
+.links{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.links a{display:inline-flex;align-items:center;gap:8px;padding:12px 18px;border-radius:12px;
+  background:var(--ink);color:var(--bg);text-decoration:none;font-weight:600;font-size:14.5px}
+.links a.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+footer{padding-block:32px 56px;color:var(--ink-3);font-size:13.5px}
+footer a{color:var(--ink-3)}
+footer p + p{margin-top:10px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header><a class="logo" href="./">Heart<i>say</i></a></header>
+
+  <div class="hero">
+    <h1>Torn between two? <em>Ask which one is better.</em></h1>
+    <p>A dress, a haircut, a pair of trainers, a sofa, a washing machine — anything you are stuck on. Photograph both, post them, and real people give a heart to the better one.</p>
+    <div class="pills">
+      <span class="pill ok">Free forever</span>
+      <span class="pill">Rated 17+</span>
+      <span class="pill brand">No tracking, ever</span>
+      <span class="pill">iPhone</span>
+    </div>
+  </div>
+
+  <section>
+    <h2>How it works</h2>
+    <div class="steps">
+      <div class="step">
+        <b>01</b>
+        <h3>Photograph both</h3>
+        <p>One photo or one short video for each of the two options you are choosing between.</p>
+      </div>
+      <div class="step">
+        <b>02</b>
+        <h3>The crowd hearts one</h3>
+        <p>People tap the option they think is better, and leave advice explaining why.</p>
+      </div>
+      <div class="step">
+        <b>03</b>
+        <h3>You decide</h3>
+        <p>Voting closes on your timer. You see the split, read the reasons, and make the call.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>What Heartsay is not</h2>
+    <p>Heartsay exists to settle a decision, not to judge people. It is <strong>not a dating app</strong> and <strong>not a rate-me app</strong>.</p>
+    <ul class="rules">
+      <li>The subject of a post is the choice, never the person.</li>
+      <li>No nudity, no underwear or swimwear photos, nothing posed to show off a body.</li>
+      <li>No asking to be rated, and no requests for contact details.</li>
+      <li>There are no profiles to browse, no messaging between members, and no way to search for people — by design.</li>
+      <li>Every post and comment can be reported in one tap. A human decides within 24 hours.</li>
+      <li>Blocking someone removes their posts, advice and votes from your feed immediately.</li>
+    </ul>
+  </section>
+
+  <section id="support">
+    <h2>Support</h2>
+    <p>Questions, safety reports, privacy and data requests, bug reports — all reach the same monitored inbox. We reply within two business days, and within 24 hours for anything about safety.</p>
+    <div class="card">
+      <h2>Contact us</h2>
+      <a class="mail" href="mailto:heartsay@gmail.com">heartsay@gmail.com</a>
+      <p>To delete your account and everything in it, open the app and go to <strong>Profile → Delete account</strong>. It happens instantly, with no email needed.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Legal</h2>
+    <p>Both documents are written in plain language and kept short enough to actually read.</p>
+    <div class="links">
+      <a href="./privacy.html">Privacy Policy</a>
+      <a class="ghost" href="./terms.html">Terms of Use</a>
+    </div>
+  </section>
+
+  <footer>
+    <p><strong>Heartsay</strong> — what the crowd says, in hearts.</p>
+    <p>Contact <a href="mailto:heartsay@gmail.com">heartsay@gmail.com</a> · <a href="./privacy.html">Privacy</a> · <a href="./terms.html">Terms</a></p>
+    <p>Apple, the Apple logo, iPhone and App Store are trademarks of Apple Inc. Google and the Google logo are trademarks of Google LLC. Heartsay is not affiliated with, endorsed by, or sponsored by either company.</p>
+  </footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Privacy Policy — Heartsay</title>
+<meta name="description" content="What Heartsay collects, what it never collects, and how to erase everything from inside the app.">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Instrument+Sans:wght@400;500;600;700&display=swap">
+<style>
+
+:root{
+  color-scheme:light;
+  --bg:#F7F5F7; --paper:#FFFFFF; --soft:#F1EEF2;
+  --ink:#17121C; --ink-2:#554E5C; --ink-3:#8D8695;
+  --line:#E4DFE9; --line-2:#D2CAD9;
+  --brand:#E1003C; --brand-ink:#A80030; --brand-soft:#FFE7EE;
+  --flag:#8A5A00; --flag-soft:#FFF3DC;
+  --display:"Bricolage Grotesque",system-ui,sans-serif;
+  --body:"Instrument Sans",system-ui,-apple-system,sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#0D0A11; --paper:#161220; --soft:#201A2A;
+    --ink:#F6F3F8; --ink-2:#B3ABBE; --ink-3:#847C90;
+    --line:#2C2538; --line-2:#3B3348;
+    --brand:#FF3060; --brand-ink:#FF6B8C; --brand-soft:#39091C;
+    --flag:#F0BC63; --flag-soft:#2E2210;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0D0A11; --paper:#161220; --soft:#201A2A;
+  --ink:#F6F3F8; --ink-2:#B3ABBE; --ink-3:#847C90;
+  --line:#2C2538; --line-2:#3B3348;
+  --brand:#FF3060; --brand-ink:#FF6B8C; --brand-soft:#39091C;
+  --flag:#F0BC63; --flag-soft:#2E2210;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.62}
+.wrap{max-width:760px;margin-inline:auto;padding-inline:20px;padding-block:0 64px}
+h1,h2,h3{font-family:var(--display);margin:0;letter-spacing:-.025em;text-wrap:balance;line-height:1.12}
+p{margin:0}
+a{color:var(--brand)}
+ul{margin:0;padding-left:20px}
+li{margin-block:5px}
+.masthead{padding-block:44px 28px;border-bottom:2px solid var(--ink)}
+.logo{font-family:var(--display);font-weight:800;font-size:24px;letter-spacing:-.045em}
+.logo i{font-style:normal;color:var(--brand)}
+.masthead h1{font-size:clamp(28px,6.5vw,40px);font-weight:800;margin-top:16px}
+.masthead p{color:var(--ink-2);margin-top:10px;max-width:56ch}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.tag{font-size:11.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
+  background:var(--soft);color:var(--ink-2);padding:5px 10px;border-radius:999px}
+.notice{display:flex;gap:11px;padding:14px 16px;border-radius:13px;background:var(--flag-soft);
+  color:var(--flag);margin-top:26px;font-size:14px;line-height:1.55}
+.notice svg{width:18px;height:18px;flex:none;margin-top:2px}
+.toc{background:var(--paper);border:1px solid var(--line);border-radius:15px;padding:18px 20px;margin-top:28px}
+.toc h3{font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);font-weight:700}
+.toc ol{margin:12px 0 0;padding-left:20px;columns:2;column-gap:28px}
+@media (max-width:560px){.toc ol{columns:1}}
+.toc li{font-size:14px;margin-block:4px}
+.toc a{color:var(--ink-2);text-decoration:none}
+.toc a:hover{color:var(--brand)}
+.doc{margin-top:52px}
+.doc > h2{font-size:clamp(23px,5vw,30px);font-weight:800;padding-bottom:14px;border-bottom:1px solid var(--line-2)}
+.sec{margin-top:34px;scroll-margin-top:20px}
+.sec h3{font-size:18px;font-weight:600;display:flex;gap:11px;align-items:baseline}
+.sec h3 .n{font-size:13px;font-weight:800;color:var(--brand);flex:none;font-variant-numeric:tabular-nums}
+.sec > *:not(h3){margin-top:11px}
+.sec p,.sec ul{color:var(--ink-2);font-size:15.5px}
+.sec strong{color:var(--ink);font-weight:600}
+.fill{background:var(--brand-soft);color:var(--brand-ink);font-weight:700;padding:1px 7px;border-radius:5px;
+  font-size:14px;white-space:nowrap;border:1px dashed var(--brand)}
+.callout{background:var(--paper);border:1px solid var(--line);border-left:3px solid var(--brand);
+  border-radius:0 12px 12px 0;padding:14px 16px}
+.callout p{font-size:14.5px;margin:0}
+table{width:100%;border-collapse:collapse;font-size:14.5px}
+.scroller{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--paper)}
+th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-weight:700;font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3);background:var(--soft)}
+tr:last-child td{border-bottom:0}
+.end{margin-top:56px;padding-top:22px;border-top:1px solid var(--line);color:var(--ink-3);font-size:13.5px}
+
+.logo{font-family:var(--display);font-weight:800;font-size:24px;letter-spacing:-.05em;text-decoration:none;color:var(--ink)}
+.logo i{font-style:normal;color:var(--brand)}
+footer{padding-block:30px 56px;color:var(--ink-3);font-size:13px;border-top:1px solid var(--line);margin-top:48px}
+footer a{color:var(--ink-3)}
+footer p + p{margin-top:9px}
+.doc{margin-top:26px}
+.wrap{max-width:720px}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+<header style="padding-block:34px 0"><a class="logo" href="./">Heart<i>say</i></a></header>
+<article class="doc">
+    <h2>Privacy Policy</h2>
+
+    <div class="sec">
+      <p style="color:var(--ink-3);font-size:14px">Last updated <span class="fill">DD MONTH YYYY</span> · Effective <span class="fill">DD MONTH YYYY</span></p>
+      <div class="callout">
+        <p><strong>The short version.</strong> We keep your name, your email, the region you pick, and what you post. We run no advertising trackers and sell nothing to anyone. You can erase everything from inside the app in about ten seconds, without emailing us.</p>
+      </div>
+    </div>
+
+    <div class="sec">
+      <h3><span class="n">1</span> Who we are</h3>
+      <p>Heartsay is operated by <span class="fill">YOUR LEGAL NAME OR COMPANY</span>, registered in <span class="fill">COUNTRY</span>. For anything in this policy, including data requests, write to <a href="mailto:heartsay@gmail.com">heartsay@gmail.com</a>. We answer within 30 days, and usually much sooner.</p>
+      <p>For the purposes of the UK and EU GDPR, we are the <strong>data controller</strong> for the information described below.</p>
+    </div>
+
+    <div class="sec" id="collect">
+      <h3><span class="n">2</span> What we collect</h3>
+      <div class="scroller"><table>
+        <tr><th>What</th><th>Why</th><th>Where it comes from</th></tr>
+        <tr><td>Display name</td><td>So voters know whose decision they are helping with</td><td>You, or your Apple / Google account</td></tr>
+        <tr><td>Email address</td><td>Signing you in, and the alerts you switch on</td><td>You, or your Apple / Google account</td></tr>
+        <tr><td>Region</td><td>Shown on your posts; you can hide it in settings</td><td>You</td></tr>
+        <tr><td>Age confirmation</td><td>The 17+ check the App Store rating requires</td><td>Calculated once, see section 3</td></tr>
+        <tr><td>Photos and videos</td><td>They are the post</td><td>Your camera or library, only when you pick them</td></tr>
+        <tr><td>Votes, advice, saves, blocks</td><td>Running the app</td><td>Your use of it</td></tr>
+        <tr><td>Profile photo</td><td>Optional, shown next to your posts</td><td>You, if you add one</td></tr>
+        <tr><td>Crash and error logs</td><td>Fixing what breaks</td><td>Your device, with no advertising identifier attached</td></tr>
+      </table></div>
+    </div>
+
+    <div class="sec" id="notcollect">
+      <h3><span class="n">3</span> What we never collect</h3>
+      <ul>
+        <li><strong>Your date of birth.</strong> We ask for it once, confirm you are 17 or older, store only the yes-or-no result, and discard the date itself. It is never written to our database.</li>
+        <li><strong>Your location.</strong> The region on your profile is the one you typed. We never read GPS, and the app does not request location permission at all.</li>
+        <li><strong>Advertising identifiers.</strong> No IDFA, no advertising SDKs, no cross-app tracking. This is why the App Tracking Transparency prompt never appears — there is nothing to ask you for.</li>
+        <li><strong>Your contacts, calendar, microphone or health data.</strong> The app never requests them.</li>
+        <li><strong>Payment details.</strong> Heartsay is free and has no purchases, so there is nothing to charge.</li>
+      </ul>
+    </div>
+
+    <div class="sec" id="why">
+      <h3><span class="n">4</span> Why we are allowed to hold it</h3>
+      <p>Under GDPR every use of your data needs a legal basis. Ours are:</p>
+      <ul>
+        <li><strong>Performance of a contract</strong> — your account, your posts, your votes. Without these the app cannot work.</li>
+        <li><strong>Legal obligation</strong> — the 17+ age check, and keeping records of content we removed.</li>
+        <li><strong>Legitimate interests</strong> — keeping the service safe and free of abuse, and fixing crashes. We balance this against your rights and keep the data minimal.</li>
+        <li><strong>Consent</strong> — optional emails and push notifications. Withdraw it any time in Profile → Notifications; nothing else changes if you do.</li>
+      </ul>
+    </div>
+
+    <div class="sec" id="share">
+      <h3><span class="n">5</span> Who else sees it</h3>
+      <p><strong>We do not sell your data, and we never will.</strong> We share it only with the companies that run the service for us, under contracts that forbid them using it for anything else:</p>
+      <ul>
+        <li><span class="fill">HOSTING PROVIDER</span> — storing the database and your photos.</li>
+        <li><strong>Apple</strong> and <strong>Google</strong> — only if you choose their sign-in button. They confirm who you are and hand us a name and an email address. They never receive your posts, your votes or your advice.</li>
+        <li>Law enforcement, but only where a valid legal order requires it, and we will tell you unless we are forbidden from doing so.</li>
+      </ul>
+      <div class="callout">
+        <p><strong>Sign in with Apple and Private Relay.</strong> If you choose Hide My Email, Apple gives us a forwarding address instead of your real one. We never see your actual inbox, and everything in the app works exactly the same.</p>
+      </div>
+    </div>
+
+    <div class="sec" id="keep">
+      <h3><span class="n">6</span> How long we keep it</h3>
+      <ul>
+        <li><strong>While your account exists</strong> — your profile and your posts stay until you remove them.</li>
+        <li><strong>After you delete your account</strong> — erased from our live systems immediately, and purged from encrypted backups within 30 days.</li>
+        <li><strong>Records of removed content</strong> — kept for <span class="fill">12 MONTHS</span> so we can enforce bans, then deleted. These hold what was removed and why, not the material itself.</li>
+      </ul>
+    </div>
+
+    <div class="sec" id="rights">
+      <h3><span class="n">7</span> Your rights</h3>
+      <p>Wherever you live, you can ask us to show you what we hold, correct it, or erase it. Under GDPR you also have the right to receive your data in a portable file, to object to processing based on legitimate interests, to restrict processing while a dispute is open, and to complain to your national data protection authority.</p>
+      <p>Under the CCPA and CPRA, California residents can ask what we collected and have it deleted. <strong>We do not sell or share personal information as those laws define it</strong>, so there is nothing to opt out of. We will never treat you differently for exercising any of these rights.</p>
+      <p>Write to <a href="mailto:heartsay@gmail.com">heartsay@gmail.com</a>, or use Profile → Data &amp; privacy in the app.</p>
+    </div>
+
+    <div class="sec" id="delete">
+      <h3><span class="n">8</span> Deleting your account</h3>
+      <p>Open <strong>Profile → Delete account</strong>, type DELETE, and confirm. That erases your profile, every photo and video you posted, all of your advice and every vote you cast. No email to us, no support ticket, no waiting — as Apple's Guideline 5.1.1(v) requires.</p>
+      <p>Deletion cannot be undone. Anonymous vote totals on other people's posts stay, because they belong to those posts and no longer point to you.</p>
+    </div>
+
+    <div class="sec">
+      <h3><span class="n">9</span> Children</h3>
+      <p>Heartsay is rated 17+ and is not for children. We do not knowingly collect anything from anyone under 17. If we learn that a younger person has created an account we delete it and its contents without waiting to be asked. Parents and guardians can reach us at <a href="mailto:heartsay@gmail.com">heartsay@gmail.com</a>.</p>
+    </div>
+
+    <div class="sec">
+      <h3><span class="n">10</span> Security and where your data lives</h3>
+      <p>Traffic between your device and our servers is encrypted in transit, and the database and stored media are encrypted at rest. Access is limited to the people who need it to operate the service.</p>
+      <p>Our servers are in <span class="fill">REGION, e.g. the European Union</span>. Where data leaves the UK or EEA, we rely on the European Commission's Standard Contractual Clauses. No method of storage is perfectly secure, and we do not claim otherwise; if a breach affects you we will notify you and the relevant authority within the time the law allows.</p>
+    </div>
+
+    <div class="sec">
+      <h3><span class="n">11</span> Changes to this policy</h3>
+      <p>If we change something that materially affects you, we will tell you in the app before it takes effect and update the date at the top. Continuing to use Heartsay after that means you accept the revised policy.</p>
+    </div>
+  </article>
+<footer>
+<p>Contact <a href="mailto:heartsay@gmail.com">heartsay@gmail.com</a> · <a href="./">Home</a> · <a href="./privacy.html">Privacy</a> · <a href="./terms.html">Terms</a></p>
+<p>Apple, the Apple logo, iPhone and App Store are trademarks of Apple Inc. Google and the Google logo are trademarks of Google LLC. Heartsay is not affiliated with, endorsed by, or sponsored by either company.</p>
+</footer>
+</div>
+</body>
+</html>

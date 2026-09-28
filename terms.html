@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Terms of Use — Heartsay</title>
+<meta name="description" content="The rules of Heartsay, your rights over your own photos, and the clauses Apple requires.">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Instrument+Sans:wght@400;500;600;700&display=swap">
+<style>
+
+:root{
+  color-scheme:light;
+  --bg:#F7F5F7; --paper:#FFFFFF; --soft:#F1EEF2;
+  --ink:#17121C; --ink-2:#554E5C; --ink-3:#8D8695;
+  --line:#E4DFE9; --line-2:#D2CAD9;
+  --brand:#E1003C; --brand-ink:#A80030; --brand-soft:#FFE7EE;
+  --flag:#8A5A00; --flag-soft:#FFF3DC;
+  --display:"Bricolage Grotesque",system-ui,sans-serif;
+  --body:"Instrument Sans",system-ui,-apple-system,sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#0D0A11; --paper:#161220; --soft:#201A2A;
+    --ink:#F6F3F8; --ink-2:#B3ABBE; --ink-3:#847C90;
+    --line:#2C2538; --line-2:#3B3348;
+    --brand:#FF3060; --brand-ink:#FF6B8C; --brand-soft:#39091C;
+    --flag:#F0BC63; --flag-soft:#2E2210;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0D0A11; --paper:#161220; --soft:#201A2A;
+  --ink:#F6F3F8; --ink-2:#B3ABBE; --ink-3:#847C90;
+  --line:#2C2538; --line-2:#3B3348;
+  --brand:#FF3060; --brand-ink:#FF6B8C; --brand-soft:#39091C;
+  --flag:#F0BC63; --flag-soft:#2E2210;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.62}
+.wrap{max-width:760px;margin-inline:auto;padding-inline:20px;padding-block:0 64px}
+h1,h2,h3{font-family:var(--display);margin:0;letter-spacing:-.025em;text-wrap:balance;line-height:1.12}
+p{margin:0}
+a{color:var(--brand)}
+ul{margin:0;padding-left:20px}
+li{margin-block:5px}
+.masthead{padding-block:44px 28px;border-bottom:2px solid var(--ink)}
+.logo{font-family:var(--display);font-weight:800;font-size:24px;letter-spacing:-.045em}
+.logo i{font-style:normal;color:var(--brand)}
+.masthead h1{font-size:clamp(28px,6.5vw,40px);font-weight:800;margin-top:16px}
+.masthead p{color:var(--ink-2);margin-top:10px;max-width:56ch}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.tag{font-size:11.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
+  background:var(--soft);color:var(--ink-2);padding:5px 10px;border-radius:999px}
+.notice{display:flex;gap:11px;padding:14px 16px;border-radius:13px;background:var(--flag-soft);
+  color:var(--flag);margin-top:26px;font-size:14px;line-height:1.55}
+.notice svg{width:18px;height:18px;flex:none;margin-top:2px}
+.toc{background:var(--paper);border:1px solid var(--line);border-radius:15px;padding:18px 20px;margin-top:28px}
+.toc h3{font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);font-weight:700}
+.toc ol{margin:12px 0 0;padding-left:20px;columns:2;column-gap:28px}
+@media (max-width:560px){.toc ol{columns:1}}
+.toc li{font-size:14px;margin-block:4px}
+.toc a{color:var(--ink-2);text-decoration:none}
+.toc a:hover{color:var(--brand)}
+.doc{margin-top:52px}
+.doc > h2{font-size:clamp(23px,5vw,30px);font-weight:800;padding-bottom:14px;border-bottom:1px solid var(--line-2)}
+.sec{margin-top:34px;scroll-margin-top:20px}
+.sec h3{font-size:18px;font-weight:600;display:flex;gap:11px;align-items:baseline}
+.sec h3 .n{font-size:13px;font-weight:800;color:var(--brand);flex:none;font-variant-numeric:tabular-nums}
+.sec > *:not(h3){margin-top:11px}
+.sec p,.sec ul{color:var(--ink-2);font-size:15.5px}
+.sec strong{color:var(--ink);font-weight:600}
+.fill{background:var(--brand-soft);color:var(--brand-ink);font-weight:700;padding:1px 7px;border-radius:5px;
+  font-size:14px;white-space:nowrap;border:1px dashed var(--brand)}
+.callout{background:var(--paper);border:1px solid var(--line);border-left:3px solid var(--brand);
+  border-radius:0 12px 12px 0;padding:14px 16px}
+.callout p{font-size:14.5px;margin:0}
+table{width:100%;border-collapse:collapse;font-size:14.5px}
+.scroller{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--paper)}
+th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-weight:700;font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3);background:var(--soft)}
+tr:last-child td{border-bottom:0}
+.end{margin-top:56px;padding-top:22px;border-top:1px solid var(--line);color:var(--ink-3);font-size:13.5px}
+
+.logo{font-family:var(--display);font-weight:800;font-size:24px;letter-spacing:-.05em;text-decoration:none;color:var(--ink)}
+.logo i{font-style:normal;color:var(--brand)}
+footer{padding-block:30px 56px;color:var(--ink-3);font-size:13px;border-top:1px solid var(--line);margin-top:48px}
+footer a{color:var(--ink-3)}
+footer p + p{margin-top:9px}
+.doc{margin-top:26px}
+.wrap{max-width:720px}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+<header style="padding-block:34px 0"><a class="logo" href="./">Heart<i>say</i></a></header>
+<article class="doc">
+    <h2>Terms of Use</h2>
+
+    <div class="sec">
+      <p style="color:var(--ink-3);font-size:14px">Last updated <span class="fill">DD MONTH YYYY</span></p>
+      <div class="callout">
+        <p><strong>The short version.</strong> Post the choice you are deciding between, not yourself. No nudity, no dating, no asking to be rated. Your photos stay yours. Break the rules and your content goes; break them badly and your account goes with it.</p>
+      </div>
+    </div>
+
+    <div class="sec">
+      <h3><span class="n">1</span> Agreeing to these terms</h3>
+      <p>By creating an account you accept these terms, our Privacy Policy, and Apple's <strong>Licensed Application End User License Agreement</strong>. You confirm that you are <strong>17 or older</strong> and that nothing in law stops you from entering this agreement. If you do not accept all of it, do not use Heartsay.</p>
+    </div>
+
+    <div class="sec">
+      <h3><span class="n">2</span> What Heartsay is</h3>
+      <p>A place to settle one decision: you are torn between two options, you post both, and the community gives a heart to the better one. An outfit, a haircut, a pair of trainers, a sofa, a washing machine, a paint colour — anything you are choosing between.</p>
+      <p><strong>Heartsay is free.</strong> There is no paid tier, no subscription and no purchase inside the app.</p>
+    </div>
+
+    <div class="sec">
+      <h3><span class="n">3</span> Your account</h3>
+      <p>Keep your sign-in details to yourself and tell us at <a href="mailto:heartsay@gmail.com">heartsay@gmail.com</a> if someone else gets into your account. One account per person. Do not create a new one to get around a ban. You are responsible for what happens under your account.</p>
+    </div>
+
+    <div class="sec">
+      <h3><span class="n">4</span> Your content stays yours</h3>
+      <p><strong>You keep every right you have in the photos and videos you post.</strong> We claim no ownership of them.</p>
+      <p>You give us a worldwide, non-exclusive, royalty-free licence to host, store, resize and display your content, for the sole purpose of running Heartsay and showing your post to the people voting on it. This licence exists only so the app can function, and it ends when you delete the content or your account — except for copies already held in backups, which are purged on the schedule in the Privacy Policy.</p>
+      <p>You confirm that the content is yours to post, that it infringes nobody's rights, and that anyone visible in it agreed to appear.</p>
+    </div>
+
+    <div class="sec" id="rules">
+      <h3><span class="n">5</span> Community Rules</h3>
+      <p><strong>Heartsay is not a dating app and not a rate-me app.</strong> The subject of a post is the choice, never the person. "Which haircut suits me" is a decision and is welcome. "Rate my looks", "am I attractive", "which of us is hotter" and anything of that shape are removed, and repeat posters lose their account. There are no profiles to browse, no messaging between members and no way to search for people — by design.</p>
+      <p>These are never allowed:</p>
+      <ul>
+        <li>Nudity or partial nudity. Underwear or swimwear photos of people. Anything posed to show off a body rather than an item.</li>
+        <li>Sexual content, gestures or comments of any kind.</li>
+        <li>Requests for contact details, or to meet.</li>
+        <li>Photos of anyone who did not agree to be posted. Minors in any photo.</li>
+        <li>Harassment, insults, body shaming, hate speech, threats.</li>
+        <li>Violence, self-harm, or dangerous acts.</li>
+        <li>Scams, fake listings, impersonation, or affiliate spam.</li>
+        <li>Anything unlawful where you are or where we operate.</li>
+      </ul>
+      <p><strong>There is zero tolerance for objectionable content and for abusive users.</strong> Confirmed nudity, sexual content, or content involving a minor ends the account immediately, with no appeal.</p>
+    </div>
+
+    <div class="sec" id="moderation">
+      <h3><span class="n">6</span> Moderation, reporting and blocking</h3>
+      <ul>
+        <li><strong>Filtering.</strong> Every post and every comment passes an automated check before it reaches anyone. Blocked material never appears publicly, not even briefly.</li>
+        <li><strong>Reporting.</strong> Every post and every comment carries a one-tap report control. A human moderator decides <strong>within 24 hours</strong>, and confirmed violations are removed on that decision.</li>
+        <li><strong>Blocking.</strong> One tap removes that account's posts, advice and votes from your experience immediately and permanently. They are not told.</li>
+        <li><strong>Consequences.</strong> First confirmed violation: content removed and a warning. Second: posting suspended for 30 days. Severe violations: immediate termination.</li>
+      </ul>
+      <p>Report anything urgent to <a href="mailto:heartsay@gmail.com">heartsay@gmail.com</a>.</p>
+    </div>
+
+    <div class="sec">
+      <h3><span class="n">7</span> Ending the agreement</h3>
+      <p>You can leave whenever you like — Profile → Delete account. We may suspend or end your access if you break these terms, if we must for legal reasons, or if we stop running Heartsay. Where it is reasonable to warn you first, we will. Sections 4, 8, 9 and 10 survive the end of this agreement.</p>
+    </div>
+
+    <div class="sec" id="apple">
+      <h3><span class="n">8</span> Terms Apple requires</h3>
+      <p>These clauses apply to the version of Heartsay you obtained from the App Store, and Apple requires every one of them:</p>
+      <ul>
+        <li><strong>This agreement is between you and us, not Apple.</strong> Apple is not responsible for Heartsay or its contents.</li>
+        <li><strong>Licence scope.</strong> Heartsay is licensed, not sold, to you — a non-transferable licence to use it on any Apple-branded device you own or control, as permitted by the App Store Usage Rules.</li>
+        <li><strong>Maintenance and support</strong> are our responsibility alone. Apple has no obligation to provide either.</li>
+        <li><strong>Warranty.</strong> If Heartsay fails to conform to any applicable warranty, you may tell Apple and Apple will refund the purchase price — which is zero, because the app is free. Apple has no other warranty obligation, and any further claims are ours to handle.</li>
+        <li><strong>Product claims.</strong> We, not Apple, answer any claim about the app: product liability, failure to meet a legal requirement, or claims under consumer protection or privacy law.</li>
+        <li><strong>Intellectual property.</strong> If a third party claims Heartsay infringes their intellectual property, we, not Apple, are responsible for defending and resolving it.</li>
+        <li><strong>Legal compliance.</strong> You confirm you are not in a country under a U.S. Government embargo or designated as supporting terrorism, and that you are not on any U.S. Government list of prohibited or restricted parties.</li>
+        <li><strong>Third-party beneficiary.</strong> Apple and its subsidiaries are third-party beneficiaries of these terms and may enforce them against you.</li>
+      </ul>
+    </div>
+
+    <div class="sec">
+      <h3><span class="n">9</span> What we do not promise</h3>
+      <p>Heartsay is provided as it is. We do not promise it will always be available, error-free, or that the crowd's choice is the right one for you. <strong>Votes and advice are opinions from strangers, not professional guidance.</strong> Decisions you make after using the app are your own.</p>
+      <p>To the fullest extent the law allows, we are not liable for indirect or consequential loss, lost profits, or lost data. Our total liability to you is limited to <span class="fill">AMOUNT, e.g. €100</span>. Nothing here limits liability for death, personal injury, or fraud — the law does not permit that, and we would not want it to.</p>
+      <p>If you are a consumer in the EU or UK, you keep every statutory right you have, and nothing in these terms takes them away.</p>
+    </div>
+
+    <div class="sec">
+      <h3><span class="n">10</span> Governing law</h3>
+      <p>These terms are governed by the law of <span class="fill">COUNTRY</span>, and disputes belong to the courts of <span class="fill">COUNTRY</span>. If you are a consumer, you may also bring a claim in the courts where you live, and EU consumers can use the European Commission's Online Dispute Resolution platform.</p>
+    </div>
+
+    <div class="sec">
+      <h3><span class="n">11</span> Changes</h3>
+      <p>We will tell you in the app before material changes take effect. If you do not accept them, delete your account — that is always available to you.</p>
+    </div>
+
+    <div class="sec">
+      <h3><span class="n">12</span> Contact</h3>
+      <p>Safety reports, privacy requests and everything else reach us at the same monitored inbox:<br>
+      <a href="mailto:heartsay@gmail.com" style="font-weight:700;font-size:17px">heartsay@gmail.com</a></p>
+    </div>
+  </article>
+<footer>
+<p>Contact <a href="mailto:heartsay@gmail.com">heartsay@gmail.com</a> · <a href="./">Home</a> · <a href="./privacy.html">Privacy</a> · <a href="./terms.html">Terms</a></p>
+<p>Apple, the Apple logo, iPhone and App Store are trademarks of Apple Inc. Google and the Google logo are trademarks of Google LLC. Heartsay is not affiliated with, endorsed by, or sponsored by either company.</p>
+</footer>
+</div>
+</body>
+</html>
