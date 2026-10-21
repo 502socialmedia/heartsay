@@ -82,6 +82,7 @@ th{color:var(--ink-3);font-size:12px;text-transform:uppercase;letter-spacing:.04
     <nav id="nav">
       <button data-tab="overview" class="on">Overview</button>
       <button data-tab="reports">Reports</button>
+      <button data-tab="reviews">Reviews</button>
       <button data-tab="ads">Ads</button>
       <button data-tab="bans">Bans</button>
       <button data-tab="log">Scan log</button>
@@ -181,7 +182,7 @@ $("#nav").onclick = (e) => {
 async function render() {
   main.replaceChildren(h("p", { class: "muted" }, "Loading…"));
   try {
-    const views = { overview: viewOverview, reports: viewReports, ads: viewAds, bans: viewBans, log: viewLog, marketing: viewMarketing };
+    const views = { overview: viewOverview, reports: viewReports, reviews: viewReviews, ads: viewAds, bans: viewBans, log: viewLog, marketing: viewMarketing };
     main.replaceChildren(await views[tab]());
   } catch (e) {
     main.replaceChildren(h("div", { class: "card" }, h("b", { class: "err" }, "Error: " + e.message)));
@@ -243,6 +244,44 @@ function reportCard(r, reload) {
     h("div", { class: "media" }, mediaBox(r.option_a_url, r.option_a_type, "A"), mediaBox(r.option_b_url, r.option_b_type, "B")),
     h("div", { class: "row" }, reasons),
     h("div", { class: "row", style: "margin-top:10px" }, restore, remove, ban3, banP));
+}
+
+// ---- Reviews on product ads (reported reviews, repeat offenders)
+async function viewReviews() {
+  const wrap = h("div", {});
+  const sel = h("select", {}, [["open", "Open reports"], ["hidden", "Hidden reviews"], ["removed", "Removed reviews"], ["all", "Everything flagged"]].map(([v, t]) => h("option", { value: v }, t)));
+  const list = h("div", {});
+  async function load() {
+    list.replaceChildren(h("p", { class: "muted" }, "Loading…"));
+    const rows = await rpc("admin_list_review_reports", { p_filter: sel.value });
+    if (!rows.length) { list.replaceChildren(h("div", { class: "card muted" }, "Nothing here.")); return; }
+    list.replaceChildren(...rows.map((r) => reviewCard(r, load)));
+  }
+  sel.onchange = () => load().catch((e) => alert(e.message));
+  wrap.append(h("p", { class: "muted" }, "A review is hidden automatically after 3 different people report it. A person whose reviews get hidden 3 times receives a strike automatically; 3 strikes in 30 days lead to a ban."),
+    h("div", { class: "row" }, sel), list);
+  await load();
+  return wrap;
+}
+function reviewCard(r, reload) {
+  const status = r.removed_at ? ["removed", "bad"] : r.hidden_at ? ["hidden", "warn"] : ["visible", "ok"];
+  const repeat = r.author_hidden_total >= 2 || r.author_strikes_30d >= 1 || r.author_banned;
+  const restore = h("button", { class: "btn primary" }, "Restore review");
+  const remove = h("button", { class: "btn danger" }, "Remove review + strike author");
+  const ban7 = h("button", { class: "btn" }, "Ban author 7 days");
+  const banP = h("button", { class: "btn danger" }, "Ban author for good");
+  restore.onclick = busy(restore, async () => { if (!confirm("Show this review again and clear its reports?")) return; await rpc("admin_dismiss_review_reports", { p_ad: r.ad_id, p_author: r.author_id }); reload(); });
+  remove.onclick = busy(remove, async () => { if (!confirm("Remove this review and add a strike to its author?")) return; await rpc("admin_uphold_review_reports", { p_ad: r.ad_id, p_author: r.author_id }); alert("Review removed and a strike added."); reload(); });
+  ban7.onclick = busy(ban7, async () => { if (!confirm("Ban the author for 7 days?")) return; await rpc("admin_ban_user", { p_user: r.author_id, p_days: 7, p_permanent: false }); alert("Banned for 7 days."); reload(); });
+  banP.onclick = busy(banP, async () => { if (!confirm("Ban the author permanently?")) return; await rpc("admin_ban_user", { p_user: r.author_id, p_days: 0, p_permanent: true }); alert("Banned permanently."); reload(); });
+  return h("div", { class: "card" },
+    h("div", { class: "row" }, h("b", {}, (r.author_name || r.author_id) + " on “" + (r.ad_name || "ad") + "”"),
+      h("span", { class: "chip " + status[1] }, status[0]), h("span", { class: "chip" }, r.report_count + " open report" + (r.report_count === 1 ? "" : "s")),
+      repeat ? h("span", { class: "chip bad" }, "Repeat behaviour") : null),
+    h("div", { class: "muted" }, "★".repeat(r.stars) + "☆".repeat(5 - r.stars) + (r.last_report ? " · last report " + when(r.last_report) : "")),
+    h("p", {}, r.body || "(no text)"),
+    h("div", { class: "muted" }, "Author: " + r.author_hidden_total + " hidden review(s) · " + r.author_reports_total + " report(s) in total · " + r.author_strikes_30d + " strike(s) in 30 days" + (r.author_banned ? " · BANNED" : "")),
+    h("div", { class: "row", style: "margin-top:10px" }, r.removed_at ? [] : [restore, remove], ban7, banP));
 }
 
 // ---- Ads (uses the review functions that already exist)
