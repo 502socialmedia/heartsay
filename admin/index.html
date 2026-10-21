@@ -246,7 +246,7 @@ function reportCard(r, reload) {
 const AD_STATUSES = ["pending_review", "approved", "paused", "rejected", "removed", "ended"];
 async function viewAds() {
   const wrap = h("div", {});
-  const sel = h("select", {}, AD_STATUSES.map((v) => h("option", { value: v }, v.replace(/_/g, " "))));
+  const sel = h("select", {}, AD_STATUSES.map((v) => h("option", { value: v }, v === "approved" ? "live (approved)" : v.replace(/_/g, " "))));
   const list = h("div", {});
   async function load() {
     list.replaceChildren(h("p", { class: "muted" }, "Loading…"));
@@ -269,19 +269,23 @@ function adCard(a, reload) {
     const b = h("button", { class: "btn " + (cls || "") }, label);
     b.onclick = busy(b, async () => {
       let reason = null;
-      if (needReason) { reason = prompt("Reason (at least 3 characters):"); if (!reason) return; }
+      if (needReason) { reason = prompt(to === "removed" ? "Why are you deleting this ad? (at least 3 characters)" : "Reason (at least 3 characters):"); if (!reason) return; }
+      if (to === "removed" && !confirm("Delete this ad? It disappears from the app and from your lists. The record is kept for the audit log.")) return;
       await rpc("admin_set_product_ad_status", { p_ad: a.id, p_new: to, p_reason: reason });
       reload();
     });
     return b;
   };
-  const buttons = a.status === "pending_review" ? [act("Approve", "approved", false, "primary"), act("Reject", "rejected", true, "danger"), act("Remove", "removed", true, "danger")]
-    : a.status === "approved" ? [act("Pause", "paused", true), act("Remove", "removed", true, "danger")]
-    : a.status === "paused" ? [act("Approve again", "approved", false, "primary"), act("Remove", "removed", true, "danger")] : [];
+  // Buttons follow the ad's current status (the server enforces the same rules)
+  let buttons = [];
+  if (a.status === "pending_review") buttons = [act("Approve", "approved", false, "primary"), act("Reject", "rejected", true, "danger"), act("Delete", "removed", true, "danger")];
+  else if (a.status === "approved" && a.is_edit) buttons = [act("Approve edit", "approved", false, "primary"), act("Reject edit", "rejected", true, "danger"), act("Pause", "paused", true), act("Delete", "removed", true, "danger")];
+  else if (a.status === "approved") buttons = [act("Pause", "paused", true), act("Delete", "removed", true, "danger")];
+  else if (a.status === "paused") buttons = [act("Resume", "approved", false, "primary"), act("Delete", "removed", true, "danger")];
   const media = urlsIn(a.media_items).map((m, i) => { const isVideo = m.type === "video" || /\.(mov|mp4|m4v)(\?|$)/i.test(m.url); return mediaBox(m.url, isVideo ? "video" : "image", String(i + 1)); });
   const links = urlsIn(a.links).map((l) => h("div", {}, h("a", { href: l.url, target: "_blank", rel: "noopener noreferrer nofollow" }, l.url)));
   return h("div", { class: "card" },
-    h("div", { class: "row" }, h("b", {}, a.name), h("span", { class: "chip" }, a.status.replace(/_/g, " ")), a.is_edit ? h("span", { class: "chip warn" }, "edit") : null),
+    h("div", { class: "row" }, h("b", {}, a.name), h("span", { class: "chip " + (a.status === "approved" ? "ok" : a.status === "paused" ? "warn" : a.status === "pending_review" ? "warn" : "bad") }, a.status === "approved" ? "live" : a.status.replace(/_/g, " ")), a.is_edit ? h("span", { class: "chip warn" }, "edit") : null),
     h("div", { class: "muted" }, "Runs " + (a.go_live_date || "?") + " → " + (a.end_date || "?") + " · " + a.links_count + " link(s) · created " + when(a.created_at)),
     h("p", {}, a.details || ""),
     h("div", { class: "media" }, media),
