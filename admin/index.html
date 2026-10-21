@@ -138,7 +138,7 @@ $("#sendCode").onclick = async () => {
   $("#loginErr").textContent = "";
   const email = $("#email").value.trim();
   if (!email) return;
-  const { error } = await sb.auth.signInWithOtp({ email, options: { shouldCreateUser: true, emailRedirectTo: location.origin + "/admin/" } });
+  const { error } = await sb.auth.signInWithOtp({ email, options: { shouldCreateUser: false, emailRedirectTo: location.origin + "/admin/" } });
   if (error) { $("#loginErr").textContent = error.message; return; }
   $("#codeHint").textContent = "We sent a message to " + email + ". Enter the code from it (or open the link in it).";
   $("#stepEmail").classList.add("hide"); $("#stepCode").classList.remove("hide");
