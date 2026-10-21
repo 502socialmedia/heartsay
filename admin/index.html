@@ -54,6 +54,11 @@ th{color:var(--ink-3);font-size:12px;text-transform:uppercase;letter-spacing:.04
 .login input{width:100%;margin:6px 0}
 .err{color:var(--danger);font-size:13px;min-height:18px}
 .hide{display:none!important}
+.modal-bg{position:fixed;inset:0;background:#0009;z-index:20;display:flex;align-items:center;justify-content:center;padding:16px}
+.modal{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:16px;width:100%;max-width:520px;max-height:92vh;overflow:auto}
+.modal label{display:block;font-size:12px;font-weight:700;color:var(--ink-3);margin:10px 0 4px;text-transform:uppercase;letter-spacing:.04em}
+.modal input,.modal textarea,.modal select{width:100%}
+.modal textarea{min-height:110px;font:inherit;border-radius:8px;border:1px solid var(--line);background:var(--paper);color:var(--ink);padding:8px 12px;resize:vertical}
 </style>
 </head>
 <body>
@@ -85,6 +90,7 @@ th{color:var(--ink-3);font-size:12px;text-transform:uppercase;letter-spacing:.04
       <button data-tab="reviews">Reviews</button>
       <button data-tab="ads">Ads</button>
       <button data-tab="bans">Bans</button>
+      <button data-tab="notices">Notices</button>
       <button data-tab="log">Scan log</button>
       <button data-tab="marketing">Marketing Analytics</button>
     </nav>
@@ -182,7 +188,7 @@ $("#nav").onclick = (e) => {
 async function render() {
   main.replaceChildren(h("p", { class: "muted" }, "Loading…"));
   try {
-    const views = { overview: viewOverview, reports: viewReports, reviews: viewReviews, ads: viewAds, bans: viewBans, log: viewLog, marketing: viewMarketing };
+    const views = { overview: viewOverview, reports: viewReports, reviews: viewReviews, ads: viewAds, bans: viewBans, notices: viewNotices, log: viewLog, marketing: viewMarketing };
     main.replaceChildren(await views[tab]());
   } catch (e) {
     main.replaceChildren(h("div", { class: "card" }, h("b", { class: "err" }, "Error: " + e.message)));
@@ -243,7 +249,7 @@ function reportCard(r, reload) {
     h("div", { class: "muted" }, "By " + (r.author_name || r.author_id) + " · posted " + when(r.created_at) + (r.last_report ? " · last report " + when(r.last_report) : "")),
     h("div", { class: "media" }, mediaBox(r.option_a_url, r.option_a_type, "A"), mediaBox(r.option_b_url, r.option_b_type, "B")),
     h("div", { class: "row" }, reasons),
-    h("div", { class: "row", style: "margin-top:10px" }, restore, remove, ban3, banP));
+    h("div", { class: "row", style: "margin-top:10px" }, restore, remove, ban3, banP, noticeButton(r.author_id, r.author_name)));
 }
 
 // ---- Reviews on product ads (reported reviews, repeat offenders)
@@ -281,7 +287,7 @@ function reviewCard(r, reload) {
     h("div", { class: "muted" }, "★".repeat(r.stars) + "☆".repeat(5 - r.stars) + (r.last_report ? " · last report " + when(r.last_report) : "")),
     h("p", {}, r.body || "(no text)"),
     h("div", { class: "muted" }, "Author: " + r.author_hidden_total + " hidden review(s) · " + r.author_reports_total + " report(s) in total · " + r.author_strikes_30d + " strike(s) in 30 days" + (r.author_banned ? " · BANNED" : "")),
-    h("div", { class: "row", style: "margin-top:10px" }, r.removed_at ? [] : [restore, remove], ban7, banP));
+    h("div", { class: "row", style: "margin-top:10px" }, r.removed_at ? [] : [restore, remove], ban7, banP, noticeButton(r.author_id, r.author_name)));
 }
 
 // ---- Ads (uses the review functions that already exist)
@@ -333,7 +339,7 @@ function adCard(a, reload) {
     h("div", { class: "media" }, media),
     h("div", { class: "muted" }, links),
     a.status_reason ? h("div", { class: "muted" }, "Reason: " + a.status_reason) : null,
-    h("div", { class: "row", style: "margin-top:10px" }, buttons));
+    h("div", { class: "row", style: "margin-top:10px" }, buttons, adNoticeButton(a)));
 }
 
 // ---- Bans / strikes
@@ -346,9 +352,100 @@ async function viewBans() {
     unban.onclick = busy(unban, async () => { if (!confirm("Lift the ban for this account?")) return; await rpc("admin_unban_user", { p_user: r.user_id }); render(); });
     return h("tr", {}, h("td", {}, r.display_name || r.user_id), h("td", {}, r.strikes_30d + " / " + r.strikes_total),
       h("td", {}, banned ? h("span", { class: "chip bad" }, r.permanent ? "Permanent" : "Until " + when(r.banned_until)) : h("span", { class: "chip ok" }, "Active")),
-      h("td", {}, banned ? unban : ""));
+      h("td", {}, h("div", { class: "row" }, banned ? unban : "", noticeButton(r.user_id, r.display_name))));
   });
   return h("div", { class: "card" }, h("table", {}, h("tr", {}, h("th", {}, "User"), h("th", {}, "Strikes 30d / total"), h("th", {}, "Status"), h("th", {})), body));
+}
+
+// ---- Notices to users (shown inside the app the next time the person opens it)
+const NOTICE_PRESETS = [
+  { id: "photo", label: "Photo violates platform rules", type: "violation", title: "Your photo breaks our rules",
+    message: "A photo you shared does not follow Heartsay's community rules, so it was removed. Please read our rules before posting again. Repeated violations can lead to a suspension." },
+  { id: "behavior", label: "Behaviour warning", type: "warning", title: "A note about your behaviour",
+    message: "We received reports about your recent activity on Heartsay. Please keep comments and posts respectful. Continued problems can lead to a suspension." },
+  { id: "general", label: "General admin notice", type: "info", title: "A message from Heartsay",
+    message: "This is a message from the Heartsay team." },
+  { id: "custom", label: "Custom message", type: "info", title: "", message: "" },
+];
+function noticeButton(userId, name) {
+  const b = h("button", { class: "btn" }, "Send notice");
+  b.onclick = () => noticeDialog(userId, name);
+  return b;
+}
+function adNoticeButton(a) {
+  const b = h("button", { class: "btn" }, "Send notice to advertiser");
+  b.onclick = busy(b, async () => {
+    const rows = await rpc("admin_ad_owner", { p_ad: a.id });
+    const o = rows && rows[0];
+    if (!o) throw new Error("Could not find the owner of this ad.");
+    noticeDialog(o.user_id, o.display_name);
+  });
+  return b;
+}
+function noticeDialog(userId, name, onSent) {
+  const preset = h("select", {}, NOTICE_PRESETS.map((p) => h("option", { value: p.id }, p.label)));
+  const type = h("select", {}, [["violation", "Violation"], ["warning", "Warning"], ["info", "Information"]].map(([v, t]) => h("option", { value: v }, t)));
+  const title = h("input", { maxlength: "80", placeholder: "Title (max 80 characters)" });
+  const msg = h("textarea", { maxlength: "600", placeholder: "Message (max 600 characters)" });
+  const count = h("div", { class: "muted" }, "0 / 600");
+  const err = h("div", { class: "err" });
+  function fill() {
+    const p = NOTICE_PRESETS.find((x) => x.id === preset.value);
+    type.value = p.type; title.value = p.title; msg.value = p.message; count.textContent = msg.value.length + " / 600";
+  }
+  preset.onchange = fill;
+  msg.oninput = () => { count.textContent = msg.value.length + " / 600"; };
+  fill();
+  const send = h("button", { class: "btn primary" }, "Send notice");
+  const cancel = h("button", { class: "btn" }, "Cancel");
+  const bg = h("div", { class: "modal-bg" }, h("div", { class: "modal" },
+    h("b", {}, "Send a notice to " + (name || userId)),
+    h("p", { class: "muted" }, "The person sees it in the app the next time they open it, and taps “Understood” to close it."),
+    h("label", {}, "Quick text"), preset,
+    h("label", {}, "Type"), type,
+    h("label", {}, "Title"), title,
+    h("label", {}, "Message"), msg, count, err,
+    h("div", { class: "row", style: "margin-top:12px" }, send, cancel)));
+  const close = () => bg.remove();
+  cancel.onclick = close;
+  bg.onclick = (e) => { if (e.target === bg) close(); };
+  send.onclick = async () => {
+    err.textContent = "";
+    if (!title.value.trim() || !msg.value.trim()) { err.textContent = "Please fill in the title and the message."; return; }
+    if (!confirm("Send this notice to " + (name || "this user") + "?")) return;
+    send.disabled = true;
+    try {
+      await rpc("admin_send_notification", { p_user: userId, p_title: title.value.trim(), p_message: msg.value.trim(), p_type: type.value });
+      close(); alert("Notice sent."); if (onSent) onSent();
+    } catch (e) { err.textContent = e.message; send.disabled = false; }
+  };
+  document.body.append(bg);
+}
+async function viewNotices() {
+  const wrap = h("div", {});
+  const q = h("input", { placeholder: "Find a user by name or email (at least 2 letters)", style: "flex:1;min-width:220px" });
+  const go = h("button", { class: "btn" }, "Search");
+  const found = h("div", {});
+  const history = h("div", {});
+  async function search() {
+    const rows = await rpc("admin_search_users", { p_q: q.value });
+    if (!rows.length) { found.replaceChildren(h("div", { class: "card muted" }, "No users found.")); return; }
+    found.replaceChildren(h("div", { class: "card" }, h("table", {}, rows.map((r) => h("tr", {},
+      h("td", {}, r.display_name || r.user_id), h("td", { class: "muted" }, r.email || ""), h("td", {}, noticeButton(r.user_id, r.display_name || r.email)))))));
+  }
+  go.onclick = busy(go, search);
+  q.onkeydown = (e) => { if (e.key === "Enter") go.click(); };
+  async function loadHistory() {
+    const rows = await rpc("admin_recent_notifications", { p_limit: 50 });
+    if (!rows.length) { history.replaceChildren(h("div", { class: "card muted" }, "No notices sent yet.")); return; }
+    history.replaceChildren(h("div", { class: "card" }, h("table", {}, h("tr", {}, h("th", {}, "When"), h("th", {}, "To"), h("th", {}, "Notice"), h("th", {}, "Status")),
+      rows.map((r) => h("tr", {}, h("td", {}, when(r.created_at)), h("td", {}, r.user_name || r.user_id),
+        h("td", {}, h("b", {}, r.title), h("div", { class: "muted" }, r.message)),
+        h("td", {}, h("span", { class: "chip " + (r.is_read ? "ok" : "warn") }, r.is_read ? "Read" : "Not read yet")))))));
+  }
+  wrap.append(h("div", { class: "row" }, q, go), found, h("h2", {}, "Recently sent"), history);
+  await loadHistory();
+  return wrap;
 }
 
 // ---- Scan log
