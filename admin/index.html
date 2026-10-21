@@ -83,6 +83,7 @@ th{color:var(--ink-3);font-size:12px;text-transform:uppercase;letter-spacing:.04
       <button data-tab="ads">Ads</button>
       <button data-tab="bans">Bans</button>
       <button data-tab="log">Scan log</button>
+      <button data-tab="marketing">Marketing Analytics</button>
     </nav>
     <button class="btn" id="signOut">Sign out</button>
   </header>
@@ -178,7 +179,7 @@ $("#nav").onclick = (e) => {
 async function render() {
   main.replaceChildren(h("p", { class: "muted" }, "Loading…"));
   try {
-    const views = { overview: viewOverview, reports: viewReports, ads: viewAds, bans: viewBans, log: viewLog };
+    const views = { overview: viewOverview, reports: viewReports, ads: viewAds, bans: viewBans, log: viewLog, marketing: viewMarketing };
     main.replaceChildren(await views[tab]());
   } catch (e) {
     main.replaceChildren(h("div", { class: "card" }, h("b", { class: "err" }, "Error: " + e.message)));
@@ -316,6 +317,66 @@ async function viewLog() {
   return h("div", { class: "card" }, h("table", {}, h("tr", {}, h("th", {}, "When"), h("th", {}, "Result"), h("th", {}, "Details")),
     rows.map((r) => h("tr", {}, h("td", {}, when(r.created_at)), h("td", {}, h("span", { class: "chip " + (r.result === "pass" ? "ok" : "bad") }, r.result)),
       h("td", { class: "muted" }, r.scores ? JSON.stringify(r.scores).slice(0, 140) : "")))));
+}
+
+// ---- Marketing Analytics (numbers are typed in or pasted from each platform; nothing is pulled automatically)
+const PLATFORMS = [["tiktok", "TikTok"], ["pinterest", "Pinterest"], ["instagram", "Instagram"], ["snapchat", "Snapchat"], ["google_groups", "Google Groups"]];
+const num = (n) => Number(n || 0).toLocaleString();
+async function viewMarketing() {
+  const wrap = h("div", {});
+  const sel = h("select", {}, [["7", "Last 7 days"], ["30", "Last 30 days"], ["90", "Last 90 days"]].map(([v, t]) => h("option", { value: v, selected: v === (window.__mkDays || "30") ? "" : null }, t)));
+  const cards = h("div", {});
+  async function load() {
+    window.__mkDays = sel.value;
+    cards.replaceChildren(h("p", { class: "muted" }, "Loading…"));
+    const rows = await rpc("admin_marketing_overview", { p_days: Number(sel.value) });
+    const by = Object.fromEntries(rows.map((r) => [r.platform, r]));
+    cards.replaceChildren(...PLATFORMS.map(([key, label]) => marketingCard(key, label, by[key] || {}, load)));
+  }
+  sel.onchange = () => load().catch((e) => alert(e.message));
+  wrap.append(
+    h("div", { class: "card" }, h("b", {}, "How this works"),
+      h("p", { class: "muted", style: "margin:6px 0 0" }, "Give each platform its own App Store link with a campaign tag: your App Store link followed by ?pt=YOUR_PROVIDER_TOKEN&ct=CAMPAIGN_NAME (the campaign link tool in App Store Connect builds it). Each day, copy views and clicks from the platform and installs from App Store Connect → App Analytics → Campaigns, and type them in under the platform. Platform APIs are not connected, so nothing updates by itself.")),
+    h("div", { class: "row" }, sel), cards);
+  await load();
+  return wrap;
+}
+function marketingCard(key, label, r, reload) {
+  const imp = Number(r.impressions || 0), clk = Number(r.clicks || 0), ins = Number(r.installs || 0);
+  const rate = clk > 0 ? (ins / clk * 100).toFixed(1) + "%" : "—";
+  const tile = (name, val) => h("div", { class: "stat" }, h("b", {}, val), h("span", {}, name));
+  const cid = h("input", { placeholder: "Campaign ID (ct=)", value: r.campaign_id || "", maxlength: "100" });
+  const lnk = h("input", { placeholder: "https:// tracking link", value: r.tracking_link || "", maxlength: "600", style: "flex:1;min-width:220px" });
+  const nts = h("input", { placeholder: "Notes", value: r.notes || "", maxlength: "500", style: "flex:1;min-width:160px" });
+  const save = h("button", { class: "btn primary" }, "Save campaign");
+  save.onclick = busy(save, async () => { await rpc("admin_marketing_save_campaign", { p_platform: key, p_campaign_id: cid.value, p_tracking_link: lnk.value, p_notes: nts.value }); reload(); });
+  const copy = h("button", { class: "btn" }, "Copy link");
+  copy.onclick = async () => { try { await navigator.clipboard.writeText(lnk.value); copy.textContent = "Copied"; setTimeout(() => (copy.textContent = "Copy link"), 1500); } catch { alert("Could not copy. Select the link and copy it."); } };
+  const today = new Date().toISOString().slice(0, 10);
+  const day = h("input", { type: "date", value: today, max: today });
+  const fi = (ph) => h("input", { type: "number", min: "0", step: "1", placeholder: ph, style: "width:120px" });
+  const fImp = fi("Views"), fClk = fi("Clicks"), fIns = fi("Installs");
+  const add = h("button", { class: "btn primary" }, "Save day");
+  add.onclick = busy(add, async () => {
+    const n = (el) => (el.value === "" ? 0 : parseInt(el.value, 10));
+    await rpc("admin_marketing_save_stats", { p_platform: key, p_day: day.value, p_impressions: n(fImp), p_clicks: n(fClk), p_installs: n(fIns) });
+    reload();
+  });
+  const recent = h("div", { class: "muted" });
+  const showRecent = h("button", { class: "btn" }, "Show recent days");
+  showRecent.onclick = busy(showRecent, async () => {
+    const rows = await rpc("admin_marketing_recent", { p_platform: key, p_limit: 14 });
+    recent.replaceChildren(rows.length ? h("table", {}, h("tr", {}, h("th", {}, "Day"), h("th", {}, "Views"), h("th", {}, "Clicks"), h("th", {}, "Installs")),
+      rows.map((x) => h("tr", {}, h("td", {}, x.day), h("td", {}, num(x.impressions)), h("td", {}, num(x.clicks)), h("td", {}, num(x.installs))))) : "No days saved yet.");
+  });
+  return h("div", { class: "card" },
+    h("div", { class: "row" }, h("b", {}, label), h("span", { class: "chip" }, r.campaign_id ? "ct=" + r.campaign_id : "no campaign ID yet")),
+    h("div", { class: "grid", style: "margin:10px 0" }, tile("Views / impressions", num(imp)), tile("Link clicks", num(clk)), tile("App Store installs", num(ins)), tile("Click → install", rate)),
+    h("div", { class: "row" }, cid, lnk, copy), h("div", { class: "row", style: "margin-top:8px" }, nts, save),
+    h("h2", {}, "Add or correct a day"),
+    h("div", { class: "row" }, day, fImp, fClk, fIns, add),
+    h("p", { class: "muted", style: "margin:6px 0" }, "Saving a day that already exists replaces its numbers."),
+    showRecent, recent);
 }
 
 sb.auth.onAuthStateChange((ev) => { if (ev === "SIGNED_IN" && !window.__started) { window.__started = true; start(); } });
