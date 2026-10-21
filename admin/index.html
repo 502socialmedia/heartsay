@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Heartsay Admin</title>
+<style>
+:root{
+  --bg:#F4F5F8; --paper:#FFFFFF; --soft:#EEF0F5; --ink:#14171F; --ink-2:#505869; --ink-3:#8590A3; --line:#DFE3EB;
+  --brand:#1F6FEB; --danger:#C62828; --danger-soft:#FDE8E8; --ok:#0B7A55; --ok-soft:#E1F5EC; --warn:#9A6700; --warn-soft:#FFF4D6;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root{ color-scheme:dark; --bg:#0E1117; --paper:#171B24; --soft:#1F2430; --ink:#F1F3F8; --ink-2:#B5BDCC; --ink-3:#7F8AA0; --line:#2A3140;
+    --brand:#5B9BFF; --danger:#FF7B7B; --danger-soft:#3A1717; --ok:#4ADE9B; --ok-soft:#0C2C21; --warn:#F2C14E; --warn-soft:#352A0B; }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}
+header{position:sticky;top:0;z-index:5;background:var(--paper);border-bottom:1px solid var(--line);padding:10px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+header h1{font-size:17px;margin:0;font-weight:700}
+nav{display:flex;gap:4px;flex-wrap:wrap;flex:1}
+nav button{background:none;border:0;color:var(--ink-2);padding:8px 12px;border-radius:8px;font:inherit;font-weight:600;cursor:pointer}
+nav button.on{background:var(--soft);color:var(--ink)}
+main{max-width:1000px;margin:0 auto;padding:16px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.stat{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px}
+.stat b{display:block;font-size:24px}
+.stat span{color:var(--ink-3);font-size:13px}
+.stat.hot b{color:var(--danger)}
+h2{font-size:16px;margin:18px 0 8px}
+button.btn,select,input{font:inherit;border-radius:8px;border:1px solid var(--line);background:var(--paper);color:var(--ink);padding:8px 12px}
+button.btn{cursor:pointer;font-weight:600}
+button.btn.primary{background:var(--brand);border-color:var(--brand);color:#fff}
+button.btn.danger{background:var(--danger-soft);border-color:var(--danger);color:var(--danger)}
+button.btn:disabled{opacity:.5;cursor:default}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.muted{color:var(--ink-3);font-size:13px}
+.chip{display:inline-block;padding:2px 8px;border-radius:99px;font-size:12px;font-weight:600;background:var(--soft);color:var(--ink-2)}
+.chip.bad{background:var(--danger-soft);color:var(--danger)}
+.chip.ok{background:var(--ok-soft);color:var(--ok)}
+.chip.warn{background:var(--warn-soft);color:var(--warn)}
+.media{display:flex;gap:6px;margin:8px 0}
+.media .m{width:120px;height:120px;border-radius:8px;overflow:hidden;background:var(--soft);display:flex;align-items:center;justify-content:center;position:relative}
+.media img,.media video{width:100%;height:100%;object-fit:cover}
+.media .tag{position:absolute;left:4px;bottom:4px;background:#000c;color:#fff;font-size:11px;font-weight:700;padding:1px 6px;border-radius:99px}
+table{width:100%;border-collapse:collapse}
+th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--ink-3);font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+.login{max-width:380px;margin:60px auto}
+.login input{width:100%;margin:6px 0}
+.err{color:var(--danger);font-size:13px;min-height:18px}
+.hide{display:none!important}
+</style>
+</head>
+<body>
+
+<div id="loginView" class="hide">
+  <div class="login card">
+    <h1 style="margin:0 0 4px">Heartsay Admin</h1>
+    <p class="muted" style="margin:0 0 10px">Sign in with your admin email. A one-time code is emailed to you.</p>
+    <div id="stepEmail">
+      <input id="email" type="email" autocomplete="email" placeholder="Admin email">
+      <button class="btn primary" id="sendCode" style="width:100%">Email me a code</button>
+    </div>
+    <div id="stepCode" class="hide">
+      <p class="muted" id="codeHint"></p>
+      <input id="code" inputmode="numeric" autocomplete="one-time-code" placeholder="Code from the email">
+      <button class="btn primary" id="verify" style="width:100%">Sign in</button>
+      <button class="btn" id="back" style="width:100%;margin-top:6px">Use another email</button>
+    </div>
+    <div class="err" id="loginErr"></div>
+  </div>
+</div>
+
+<div id="appView" class="hide">
+  <header>
+    <h1>Heartsay Admin</h1>
+    <nav id="nav">
+      <button data-tab="overview" class="on">Overview</button>
+      <button data-tab="reports">Reports</button>
+      <button data-tab="ads">Ads</button>
+      <button data-tab="bans">Bans</button>
+      <button data-tab="log">Scan log</button>
+    </nav>
+    <button class="btn" id="signOut">Sign out</button>
+  </header>
+  <main id="main"></main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.0/dist/umd/supabase.js"></script>
+<script>
+"use strict";
+const SUPABASE_URL = "https://qifkhjkybvzqqayxcjmf.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFpZmtoamt5YnZ6cXFheXhjam1mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEyOTUwNzAsImV4cCI6MjEwNjg3MTA3MH0.adF_nc1e1JVo9bTEFrI2LHLfjLIuLS3EoccdUbFWcWs"; // public (anon) key; every admin call is checked on the server
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
+
+const $ = (s) => document.querySelector(s);
+const main = $("#main");
+let tab = "overview";
+
+// ---- tiny safe DOM helper: text is always set with textContent, never as HTML
+function h(tag, attrs, ...kids) {
+  const el = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs || {})) {
+    if (k === "class") el.className = v;
+    else if (k === "onclick") el.onclick = v;
+    else if (v !== false && v != null) el.setAttribute(k, v);
+  }
+  for (const k of kids.flat()) if (k != null && k !== false) el.append(k.nodeType ? k : document.createTextNode(String(k)));
+  return el;
+}
+const safeUrl = (u) => { try { const x = new URL(u); return x.protocol === "https:" ? x.href : null; } catch { return null; } };
+const when = (t) => t ? new Date(t).toLocaleString() : "";
+
+async function rpc(name, args) {
+  const { data, error } = await sb.rpc(name, args || {});
+  if (error) throw new Error(error.message);
+  return data;
+}
+function mediaBox(url, type, tag) {
+  const u = safeUrl(url);
+  const box = h("div", { class: "m" });
+  if (u) box.append(type === "video" ? h("video", { src: u, controls: "", preload: "metadata", playsinline: "" }) : h("img", { src: u, loading: "lazy", alt: "" }));
+  box.append(h("span", { class: "tag" }, tag));
+  return box;
+}
+function busy(btn, fn) {
+  return async () => {
+    btn.disabled = true;
+    try { await fn(); } catch (e) { alert(e.message); } finally { btn.disabled = false; }
+  };
+}
+
+// ---- login (email code)
+$("#sendCode").onclick = async () => {
+  $("#loginErr").textContent = "";
+  const email = $("#email").value.trim();
+  if (!email) return;
+  const { error } = await sb.auth.signInWithOtp({ email, options: { shouldCreateUser: true, emailRedirectTo: location.origin + "/admin/" } });
+  if (error) { $("#loginErr").textContent = error.message; return; }
+  $("#codeHint").textContent = "We sent a message to " + email + ". Enter the code from it (or open the link in it).";
+  $("#stepEmail").classList.add("hide"); $("#stepCode").classList.remove("hide");
+};
+$("#verify").onclick = async () => {
+  $("#loginErr").textContent = "";
+  const { error } = await sb.auth.verifyOtp({ email: $("#email").value.trim(), token: $("#code").value.trim(), type: "email" });
+  if (error) { $("#loginErr").textContent = error.message; return; }
+  start();
+};
+$("#back").onclick = () => { $("#stepCode").classList.add("hide"); $("#stepEmail").classList.remove("hide"); };
+$("#signOut").onclick = async () => { await sb.auth.signOut(); location.reload(); };
+
+async function start() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) { $("#appView").classList.add("hide"); $("#loginView").classList.remove("hide"); return; }
+  let ok = false;
+  try { ok = await rpc("is_admin"); } catch {}
+  $("#loginView").classList.add("hide");
+  $("#appView").classList.remove("hide");
+  if (!ok) {
+    $("#nav").classList.add("hide");
+    main.replaceChildren(h("div", { class: "card" }, h("b", {}, "This account is not an admin."),
+      h("p", { class: "muted" }, "You are signed in as " + (session.user.email || "unknown") + ". Admin access is granted on the server only.")));
+    return;
+  }
+  render();
+}
+
+$("#nav").onclick = (e) => {
+  const b = e.target.closest("button"); if (!b) return;
+  tab = b.dataset.tab;
+  document.querySelectorAll("#nav button").forEach((x) => x.classList.toggle("on", x === b));
+  render();
+};
+
+async function render() {
+  main.replaceChildren(h("p", { class: "muted" }, "Loading…"));
+  try {
+    const views = { overview: viewOverview, reports: viewReports, ads: viewAds, bans: viewBans, log: viewLog };
+    main.replaceChildren(await views[tab]());
+  } catch (e) {
+    main.replaceChildren(h("div", { class: "card" }, h("b", { class: "err" }, "Error: " + e.message)));
+  }
+}
+
+// ---- Overview
+async function viewOverview() {
+  const o = await rpc("admin_overview");
+  const s = (label, val, hot) => h("div", { class: "stat" + (hot && val > 0 ? " hot" : "") }, h("b", {}, val ?? 0), h("span", {}, label));
+  return h("div", {},
+    h("h2", {}, "Needs attention"),
+    h("div", { class: "grid" }, s("Reported posts (open)", o.reports_open_posts, true), s("Hidden posts", o.posts_hidden, true),
+      s("Ads waiting review", o.ads_pending, true), s("Accounts banned now", o.banned_now)),
+    h("h2", {}, "App"),
+    h("div", { class: "grid" }, s("Users", o.users), s("New users (24h)", o.users_24h), s("Active posts", o.posts_active),
+      s("New posts (24h)", o.posts_24h), s("Removed posts", o.posts_removed), s("Live ads", o.ads_live)),
+    h("h2", {}, "Last 24 hours"),
+    h("div", { class: "grid" }, s("Views", o.views_24h), s("Hearts", o.likes_24h), s("Comments", o.comments_24h),
+      s("Uploads scanned", o.scans_24h), s("Scans blocked", o.scans_blocked_24h), s("Strikes (30 days)", o.strikes_30d)),
+    h("h2", {}, "Top countries (viewers, 30 days)"),
+    h("div", { class: "card" }, (o.countries || []).length
+      ? h("table", {}, h("tr", {}, h("th", {}, "Country"), h("th", {}, "Viewers")), (o.countries).map((c) => h("tr", {}, h("td", {}, c.country), h("td", {}, c.viewers))))
+      : h("span", { class: "muted" }, "No data yet.")),
+    h("p", { class: "muted" }, "All figures are totals. No individual user is tracked here."));
+}
+
+// ---- Reports
+async function viewReports() {
+  const wrap = h("div", {});
+  const sel = h("select", {}, ["open", "hidden", "removed", "all"].map((v) => h("option", { value: v }, v === "open" ? "Open reports" : v === "hidden" ? "Hidden posts" : v === "removed" ? "Removed posts" : "Everything flagged")));
+  const list = h("div", {});
+  async function load() {
+    list.replaceChildren(h("p", { class: "muted" }, "Loading…"));
+    const rows = await rpc("admin_list_reports", { p_filter: sel.value });
+    if (!rows.length) { list.replaceChildren(h("div", { class: "card muted" }, "Nothing here.")); return; }
+    list.replaceChildren(...rows.map((r) => reportCard(r, load)));
+  }
+  sel.onchange = () => load().catch((e) => alert(e.message));
+  wrap.append(h("div", { class: "row" }, sel), list);
+  await load();
+  return wrap;
+}
+function reportCard(r, reload) {
+  const reasons = Object.entries(r.reasons || {}).map(([k, v]) => h("span", { class: "chip warn" }, k.replace(/_/g, " ") + " ×" + v));
+  const restore = h("button", { class: "btn primary" }, "Restore post (dismiss reports)");
+  const remove = h("button", { class: "btn danger" }, "Remove post + strike author");
+  const ban3 = h("button", { class: "btn" }, "Ban author 7 days");
+  const banP = h("button", { class: "btn danger" }, "Ban author for good");
+  restore.onclick = busy(restore, async () => { if (!confirm("Show this post again? It stays hidden for people who reported it.")) return; await rpc("admin_dismiss_reports", { p_post: r.post_id }); reload(); });
+  remove.onclick = busy(remove, async () => { if (!confirm("Remove this post and add a strike to its author?")) return; await rpc("admin_uphold_reports", { p_post: r.post_id }); alert("Post removed and a strike added to the author."); reload(); });
+  ban3.onclick = busy(ban3, async () => { if (!confirm("Ban the author for 7 days?")) return; await rpc("admin_ban_user", { p_user: r.author_id, p_days: 7, p_permanent: false }); alert("Banned for 7 days."); });
+  banP.onclick = busy(banP, async () => { if (!confirm("Ban the author permanently?")) return; await rpc("admin_ban_user", { p_user: r.author_id, p_days: 0, p_permanent: true }); alert("Banned permanently."); });
+  return h("div", { class: "card" },
+    h("div", { class: "row" }, h("b", {}, r.question),
+      h("span", { class: "chip " + (r.status === "active" ? "ok" : "bad") }, r.status + (r.hidden_reason ? " (" + r.hidden_reason + ")" : "")),
+      h("span", { class: "chip" }, r.report_count + " report" + (r.report_count === 1 ? "" : "s"))),
+    h("div", { class: "muted" }, "By " + (r.author_name || r.author_id) + " · posted " + when(r.created_at) + (r.last_report ? " · last report " + when(r.last_report) : "")),
+    h("div", { class: "media" }, mediaBox(r.option_a_url, r.option_a_type, "A"), mediaBox(r.option_b_url, r.option_b_type, "B")),
+    h("div", { class: "row" }, reasons),
+    h("div", { class: "row", style: "margin-top:10px" }, restore, remove, ban3, banP));
+}
+
+// ---- Ads (uses the review functions that already exist)
+const AD_STATUSES = ["pending_review", "approved", "paused", "rejected", "removed", "ended"];
+async function viewAds() {
+  const wrap = h("div", {});
+  const sel = h("select", {}, AD_STATUSES.map((v) => h("option", { value: v }, v.replace(/_/g, " "))));
+  const list = h("div", {});
+  async function load() {
+    list.replaceChildren(h("p", { class: "muted" }, "Loading…"));
+    const rows = await rpc("admin_list_product_ads_v2", { p_status: sel.value });
+    if (!rows.length) { list.replaceChildren(h("div", { class: "card muted" }, "No ads with this status.")); return; }
+    list.replaceChildren(...rows.map((a) => adCard(a, load)));
+  }
+  sel.onchange = () => load().catch((e) => alert(e.message));
+  wrap.append(h("div", { class: "row" }, sel), list);
+  await load();
+  return wrap;
+}
+function urlsIn(v) {
+  const out = [];
+  const walk = (x) => { if (!x) return; if (typeof x === "string") { const u = safeUrl(x); if (u) out.push({ url: u }); } else if (Array.isArray(x)) x.forEach(walk); else if (typeof x === "object") { if (typeof x.url === "string" && safeUrl(x.url)) out.push({ url: safeUrl(x.url), type: x.type || x.kind, title: x.title || x.label }); else Object.values(x).forEach(walk); } };
+  walk(v); return out;
+}
+function adCard(a, reload) {
+  const act = (label, to, needReason, cls) => {
+    const b = h("button", { class: "btn " + (cls || "") }, label);
+    b.onclick = busy(b, async () => {
+      let reason = null;
+      if (needReason) { reason = prompt("Reason (at least 3 characters):"); if (!reason) return; }
+      await rpc("admin_set_product_ad_status", { p_ad: a.id, p_new: to, p_reason: reason });
+      reload();
+    });
+    return b;
+  };
+  const buttons = a.status === "pending_review" ? [act("Approve", "approved", false, "primary"), act("Reject", "rejected", true, "danger"), act("Remove", "removed", true, "danger")]
+    : a.status === "approved" ? [act("Pause", "paused", true), act("Remove", "removed", true, "danger")]
+    : a.status === "paused" ? [act("Approve again", "approved", false, "primary"), act("Remove", "removed", true, "danger")] : [];
+  const media = urlsIn(a.media_items).map((m, i) => { const isVideo = m.type === "video" || /\.(mov|mp4|m4v)(\?|$)/i.test(m.url); return mediaBox(m.url, isVideo ? "video" : "image", String(i + 1)); });
+  const links = urlsIn(a.links).map((l) => h("div", {}, h("a", { href: l.url, target: "_blank", rel: "noopener noreferrer nofollow" }, l.url)));
+  return h("div", { class: "card" },
+    h("div", { class: "row" }, h("b", {}, a.name), h("span", { class: "chip" }, a.status.replace(/_/g, " ")), a.is_edit ? h("span", { class: "chip warn" }, "edit") : null),
+    h("div", { class: "muted" }, "Runs " + (a.go_live_date || "?") + " → " + (a.end_date || "?") + " · " + a.links_count + " link(s) · created " + when(a.created_at)),
+    h("p", {}, a.details || ""),
+    h("div", { class: "media" }, media),
+    h("div", { class: "muted" }, links),
+    a.status_reason ? h("div", { class: "muted" }, "Reason: " + a.status_reason) : null,
+    h("div", { class: "row", style: "margin-top:10px" }, buttons));
+}
+
+// ---- Bans / strikes
+async function viewBans() {
+  const rows = await rpc("admin_list_bans");
+  if (!rows.length) return h("div", { class: "card muted" }, "No strikes or bans yet.");
+  const body = rows.map((r) => {
+    const banned = r.permanent || (r.banned_until && new Date(r.banned_until) > new Date());
+    const unban = h("button", { class: "btn" }, "Unban");
+    unban.onclick = busy(unban, async () => { if (!confirm("Lift the ban for this account?")) return; await rpc("admin_unban_user", { p_user: r.user_id }); render(); });
+    return h("tr", {}, h("td", {}, r.display_name || r.user_id), h("td", {}, r.strikes_30d + " / " + r.strikes_total),
+      h("td", {}, banned ? h("span", { class: "chip bad" }, r.permanent ? "Permanent" : "Until " + when(r.banned_until)) : h("span", { class: "chip ok" }, "Active")),
+      h("td", {}, banned ? unban : ""));
+  });
+  return h("div", { class: "card" }, h("table", {}, h("tr", {}, h("th", {}, "User"), h("th", {}, "Strikes 30d / total"), h("th", {}, "Status"), h("th", {})), body));
+}
+
+// ---- Scan log
+async function viewLog() {
+  const rows = await rpc("admin_recent_checks");
+  if (!rows.length) return h("div", { class: "card muted" }, "No scans yet.");
+  return h("div", { class: "card" }, h("table", {}, h("tr", {}, h("th", {}, "When"), h("th", {}, "Result"), h("th", {}, "Details")),
+    rows.map((r) => h("tr", {}, h("td", {}, when(r.created_at)), h("td", {}, h("span", { class: "chip " + (r.result === "pass" ? "ok" : "bad") }, r.result)),
+      h("td", { class: "muted" }, r.scores ? JSON.stringify(r.scores).slice(0, 140) : "")))));
+}
+
+sb.auth.onAuthStateChange((ev) => { if (ev === "SIGNED_IN" && !window.__started) { window.__started = true; start(); } });
+start();
+</script>
+</body>
+</html>
