@@ -44,6 +44,8 @@ button.btn:disabled{opacity:.5;cursor:default}
 .media{display:flex;gap:6px;margin:8px 0}
 .media .m{width:120px;height:120px;border-radius:8px;overflow:hidden;background:var(--soft);display:flex;align-items:center;justify-content:center;position:relative}
 .media img,.media video{width:100%;height:100%;object-fit:cover}
+.media .m.full{width:170px;height:170px}
+.media .m.full img,.media .m.full video{object-fit:contain}
 .media .tag{position:absolute;left:4px;bottom:4px;background:#000c;color:#fff;font-size:11px;font-weight:700;padding:1px 6px;border-radius:99px}
 table{width:100%;border-collapse:collapse}
 th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:top}
@@ -120,9 +122,9 @@ async function rpc(name, args) {
   if (error) throw new Error(error.message);
   return data;
 }
-function mediaBox(url, type, tag) {
+function mediaBox(url, type, tag, full) {
   const u = safeUrl(url);
-  const box = h("div", { class: "m" });
+  const box = h("div", { class: "m" + (full ? " full" : "") });
   if (u) box.append(type === "video" ? h("video", { src: u, controls: "", preload: "metadata", playsinline: "" }) : h("img", { src: u, loading: "lazy", alt: "" }));
   box.append(h("span", { class: "tag" }, tag));
   return box;
@@ -283,7 +285,7 @@ function adCard(a, reload) {
   else if (a.status === "approved" && a.is_edit) buttons = [act("Approve edit", "approved", false, "primary"), act("Reject edit", "rejected", true, "danger"), act("Pause", "paused", true), act("Delete", "removed", true, "danger")];
   else if (a.status === "approved") buttons = [act("Pause", "paused", true), act("Delete", "removed", true, "danger")];
   else if (a.status === "paused") buttons = [act("Resume", "approved", false, "primary"), act("Delete", "removed", true, "danger")];
-  const media = urlsIn(a.media_items).map((m, i) => { const isVideo = m.type === "video" || /\.(mov|mp4|m4v)(\?|$)/i.test(m.url); return mediaBox(m.url, isVideo ? "video" : "image", String(i + 1)); });
+  const media = urlsIn(a.media_items).map((m, i) => { const isVideo = m.type === "video" || /\.(mov|mp4|m4v)(\?|$)/i.test(m.url); return mediaBox(m.url, isVideo ? "video" : "image", String(i + 1), true); });
   const links = urlsIn(a.links).map((l) => h("div", {}, h("a", { href: l.url, target: "_blank", rel: "noopener noreferrer nofollow" }, l.url)));
   return h("div", { class: "card" },
     h("div", { class: "row" }, h("b", {}, a.name), h("span", { class: "chip " + (a.status === "approved" ? "ok" : a.status === "paused" ? "warn" : a.status === "pending_review" ? "warn" : "bad") }, a.status === "approved" ? "live" : a.status.replace(/_/g, " ")), a.is_edit ? h("span", { class: "chip warn" }, "edit") : null),
