@@ -312,6 +312,24 @@ function urlsIn(v) {
   const walk = (x) => { if (!x) return; if (typeof x === "string") { const u = safeUrl(x); if (u) out.push({ url: u }); } else if (Array.isArray(x)) x.forEach(walk); else if (typeof x === "object") { if (typeof x.url === "string" && safeUrl(x.url)) out.push({ url: safeUrl(x.url), type: x.type || x.kind, title: x.title || x.label }); else Object.values(x).forEach(walk); } };
   walk(v); return out;
 }
+// Extra links of an ad (title, photos, description), loaded when the card is built
+function extrasBox(a) {
+  const box = h("div", {});
+  if ((a.links_count || 0) > 1) {
+    rpc("get_product_ad_extra_links", { p_ad: a.id }).then((rows) => {
+      (rows || []).forEach((x) => {
+        const pics = urlsIn(x.media_items).map((m, i) => mediaBox(m.url, "image", String(i + 1), true));
+        box.append(h("div", { class: "card", style: "margin-top:8px" },
+          h("b", {}, "Link " + x.link_position + ": " + (x.title || "")),
+          h("div", {}, h("a", { href: x.url, target: "_blank", rel: "noopener noreferrer nofollow" }, x.url)),
+          x.description ? h("p", {}, x.description) : null,
+          h("div", { class: "media" }, pics)));
+      });
+    }).catch(() => {});
+  }
+  return box;
+}
+
 function adCard(a, reload) {
   const act = (label, to, needReason, cls) => {
     const b = h("button", { class: "btn " + (cls || "") }, label);
@@ -338,6 +356,7 @@ function adCard(a, reload) {
     h("p", {}, a.details || ""),
     h("div", { class: "media" }, media),
     h("div", { class: "muted" }, links),
+    extrasBox(a),
     a.status_reason ? h("div", { class: "muted" }, "Reason: " + a.status_reason) : null,
     h("div", { class: "row", style: "margin-top:10px" }, buttons, adNoticeButton(a)));
 }
