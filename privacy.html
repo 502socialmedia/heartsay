@@ -100,7 +100,7 @@ footer p + p{margin-top:9px}
     <h2>Privacy Policy</h2>
 
     <div class="sec">
-      <p style="color:var(--ink-3);font-size:14px">Last updated 21 October 2026 · Effective 21 October 2026</p>
+      <p style="color:var(--ink-3);font-size:14px">Last updated 25 October 2026 · Effective 25 October 2026</p>
       <div class="callout">
         <p><strong>The short version.</strong> We keep your name, your email, the region you pick, and what you post. We run no advertising trackers and sell nothing to anyone. You can erase everything from inside the app in about ten seconds, without emailing us.</p>
       </div>
@@ -160,6 +160,7 @@ footer p + p{margin-top:9px}
       <p><strong>We do not sell your data, and we never will.</strong> We share it only with the companies that run the service for us, under contracts that forbid them using it for anything else:</p>
       <ul>
         <li><strong>Supabase</strong> (database and photo storage) and <strong>GitHub Pages</strong> (this website) — storing the database and your photos.</li>
+        <li><strong>Anthropic</strong> (automated image safety check) — receives the photos and video frames you choose to post, and the images and videos in ads you submit, only so an AI model can check them against our content rules. It returns a result (ok, unsure or violation) and nothing else is shared with it.</li>
         <li><strong>Apple</strong> and <strong>Google</strong> — only if you choose their sign-in button. They confirm who you are and hand us a name and an email address. They never receive your posts, your votes or your advice.</li>
         <li>Law enforcement, but only where a valid legal order requires it, and we will tell you unless we are forbidden from doing so.</li>
       </ul>
@@ -204,7 +205,7 @@ footer p + p{margin-top:9px}
     <div class="sec" id="moderation">
       <h3><span class="n">11</span> Content checks, reports and bans</h3>
       <ul>
-        <li><strong>Automatic check before you post.</strong> The photos and video frames you choose to post are checked by a free, open-source nudity-detection model that runs on our own server. No outside company receives them. The temporary copies used for the check are deleted straight afterwards. We keep only the result: your account, the time, pass or blocked, and the scores. An upload that fails the check is not published and counts as a strike.</li>
+        <li><strong>Automatic check before you post.</strong> The photos and video frames you choose to post go through two automatic checks: a free, open-source nudity-detection model that runs on our own server, and then an AI review by Anthropic's Claude model to catch content our rules forbid. Anthropic receives the images only to perform this check and return a result. The temporary copies on our server are deleted straight afterwards. We keep only the result: your account, the time, pass or blocked, and the scores. Ads you submit are checked in the same way before we review them. An upload that fails the check is not published and counts as a strike.</li>
         <li><strong>Reports.</strong> Anyone can report a post. We record who reported which post and why, and we do not tell the author who reported. The post disappears from the reporter’s feed straight away. When several different people report the same post it is hidden for everyone until we review it. We then either restore it or remove it. Removing a post counts as a strike for its author.</li>
         <li><strong>Strikes and bans.</strong> Three strikes within 30 days lead to a 7-day ban. After a ban, three further strikes lead to a permanent ban. We can also ban an account for serious abuse. A banned account cannot post or comment. If you think a decision was wrong, write to <a href="mailto:support@heartsay.co">support@heartsay.co</a> and we will look again.</li>
         <li><strong>Who can see this.</strong> Only the person who runs Heartsay, through a private, sign-in-protected admin page, can see reports, hidden posts, advertising requests, strikes and bans, and overall totals such as the number of users and posts.</li>
